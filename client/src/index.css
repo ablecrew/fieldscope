@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: #f9fafb;
+    color: #111827;
+  }
+}
+
+@layer components {
+  .gradient-green-brown {
+    background: linear-gradient(to bottom, #008800, #9A7B4F);
+  }
+
+  .gradient-brown-green {
+    background: linear-gradient(to bottom, #9A7B4F, #008800);
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-primary-green text-primary-cream rounded-lg font-semibold hover:bg-green-700 transition-colors;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-primary-brown border-2 border-primary-brown text-primary-cream rounded-lg font-semibold hover:bg-opacity-90 transition-all;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9A7B4F;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #008800;
+}
