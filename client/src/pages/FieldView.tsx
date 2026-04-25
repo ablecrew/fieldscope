@@ -90,7 +90,7 @@ const FieldView: React.FC = () => {
       id: `n${Date.now()}`,
       fieldId: field.id,
       userId: user.id,
-      userName: user.name,
+      userName: user.full_name,
       content: noteContent.trim(),
       createdAt: new Date().toISOString(),
     };

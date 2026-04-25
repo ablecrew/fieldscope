@@ -15,10 +15,13 @@ export interface Field {
   planting_date: string;
   current_stage: 'Planted' | 'Growing' | 'Ready' | 'Harvested';
   status: 'Active' | 'At Risk' | 'Completed';
-  assigned_agent?: string;
-  assigned_agent_details?: User;
-  location?: string;
-  size_hectares?: number;
+
+  assigned_agent?: string | null;
+  assigned_agent_details?: User | null;
+
+  location?: string | null;
+  size_hectares?: number | null;
+
   last_updated_at: string;
   is_archived: boolean;
   created_at?: string;
