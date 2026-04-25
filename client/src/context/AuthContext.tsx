@@ -65,7 +65,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(u);
         localStorage.setItem('fieldscope_user', JSON.stringify(u));
       } catch {
-        // Token expired or invalid — clear everything
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('fieldscope_user');
@@ -80,17 +79,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // ── Login ──
   const login = async (email: string, password: string): Promise<LoginResult> => {
     try {
+      console.log('🔐 Attempting login for:', email);
+
       // 1. Get JWT tokens
       const tokenRes = await api.post('/auth/login/', { email, password });
+      console.log('✅ Token response:', tokenRes.data);
+
       const { access, refresh } = tokenRes.data;
+
+      if (!access || !refresh) {
+        console.error('❌ No tokens in response:', tokenRes.data);
+        return { success: false, error: 'Server returned no tokens.' };
+      }
 
       localStorage.setItem('access_token', access);
       localStorage.setItem('refresh_token', refresh);
 
-      // 2. Fetch the full user profile
+      // 2. Check if user data came with login response
+      if (tokenRes.data.user) {
+        console.log('✅ User data from login response:', tokenRes.data.user);
+        const u: AuthUser = {
+          id: tokenRes.data.user.id,
+          email: tokenRes.data.user.email,
+          full_name: tokenRes.data.user.full_name,
+          role: tokenRes.data.user.role,
+          avatar_url: tokenRes.data.user.avatar_url,
+        };
+        setUser(u);
+        localStorage.setItem('fieldscope_user', JSON.stringify(u));
+        return { success: true, user: u };
+      }
+
+      // 3. If not in login response, fetch from /me/
+      console.log('📡 Fetching user profile from /auth/me/...');
       const meRes = await api.get('/auth/me/', {
         headers: { Authorization: `Bearer ${access}` },
       });
+      console.log('✅ /me/ response:', meRes.data);
 
       const u: AuthUser = {
         id: meRes.data.id,
@@ -102,9 +127,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       setUser(u);
       localStorage.setItem('fieldscope_user', JSON.stringify(u));
-
       return { success: true, user: u };
+
     } catch (err: any) {
+      // ── Detailed error logging ──
+      console.error('❌ LOGIN FAILED');
+      console.error('Status:', err.response?.status);
+      console.error('Response data:', err.response?.data);
+      console.error('Error message:', err.message);
+
       const status = err.response?.status;
       const data = err.response?.data;
 
@@ -112,6 +143,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (status === 401) {
         error = 'Invalid email or password.';
+      } else if (status === 400) {
+        // Collect all field errors into one message
+        if (data && typeof data === 'object') {
+          const messages: string[] = [];
+          Object.entries(data).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+              messages.push(`${key}: ${(value as string[]).join(', ')}`);
+            } else if (typeof value === 'string') {
+              messages.push(value);
+            }
+          });
+          if (messages.length > 0) {
+            error = messages.join('. ');
+          }
+        }
       } else if (data?.detail) {
         error = data.detail;
       } else if (data?.non_field_errors) {
@@ -130,14 +176,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     password: string;
   }): Promise<RegisterResult> => {
     try {
+      console.log('📝 Attempting registration:', { ...data, password: '***' });
       await api.post('/auth/register/', data);
+      console.log('✅ Registration successful');
       return { success: true };
     } catch (err: any) {
+      console.error('❌ REGISTRATION FAILED');
+      console.error('Status:', err.response?.status);
+      console.error('Response data:', err.response?.data);
+
       const respData = err.response?.data;
 
-      // Django REST returns field-level errors as { field: ["error msg"] }
       if (respData && typeof respData === 'object') {
-        // Check for specific field errors
         const fieldErrors: Record<string, string[]> = {};
         let generalError = '';
 

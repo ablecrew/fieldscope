@@ -1,8 +1,11 @@
 import axios from 'axios';
 
-// Use relative URL — Vite proxy handles routing to Django
+// In development: Vite proxy handles /api → Django
+// In production: VITE_API_URL points to the deployed backend
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -27,7 +30,7 @@ api.interceptors.response.use(
       try {
         const refresh = localStorage.getItem('refresh_token');
         if (!refresh) throw new Error('no refresh');
-        const res = await axios.post('/api/auth/login/refresh/', { refresh });
+        const res = await axios.post(`${API_BASE_URL}/auth/login/refresh/`, { refresh });
         localStorage.setItem('access_token', res.data.access);
         original.headers.Authorization = `Bearer ${res.data.access}`;
         return api(original);

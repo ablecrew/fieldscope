@@ -20,6 +20,7 @@ import { useAgents } from '../../hooks/useAgents';
 import { useActivities } from '../../hooks/useActivities';
 import { useSensors } from '../../hooks/useSensors';
 import type { Field, User as UserType, Sensor } from '../../utils/types';
+import logo from "../../assets/FSS_I.png";
 
 /* ─── helpers ──────────────────────────────────────── */
 const stageColors: Record<string, string> = {
@@ -55,11 +56,15 @@ const fmtTime = (d: string) => {
 };
 
 const FSLogo = (size = 36) => (
-  <img src="/FS.png" alt="FS" style={{ height: size, width: size }} className="object-contain"
-    onError={(e) => {
-      (e.target as HTMLImageElement).src =
-        `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'%3E%3Crect fill='%23008800' width='${size}' height='${size}' rx='4'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Montserrat' font-size='${Math.round(size * 0.44)}' fill='%23FFFDD0' font-weight='bold'%3EFS%3C/text%3E%3C/svg%3E`;
-    }}
+  <img
+      src={logo}
+      alt="FieldScope Logo"
+      className="h-10 w-10 object-contain"
+      onError={(e) => {
+          const target = e.target as HTMLImageElement;
+          target.src =
+          'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40"%3E%3Crect fill="%23008800" width="40" height="40"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Montserrat" font-size="20" fill="%23FFFDD0" font-weight="bold"%3EFS%3C/text%3E%3C/svg%3E';
+      }}
   />
 );
 

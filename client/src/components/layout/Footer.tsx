@@ -19,15 +19,15 @@ const Footer: React.FC = () => {
           <div className="col-span-1 lg:col-span-1">
             <div className="flex items-center space-x-2 mb-4">
               <img
-                  src={logo}
-                  alt="FieldScope Logo"
-                  className="h-24 w-24 object-contain"
-                  onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src =
-                       'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40"%3E%3Crect fill="%23008800" width="40" height="40"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Montserrat" font-size="20" fill="%23FFFDD0" font-weight="bold"%3EFS%3C/text%3E%3C/svg%3E';
-                  }}
-              />
+                                  src={logo}
+                                  alt="FieldScope Logo"
+                                  className="h-24 w-24 object-contain"
+                                  onError={(e) => {
+                                      const target = e.target as HTMLImageElement;
+                                      target.src =
+                                       'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40"%3E%3Crect fill="%23008800" width="40" height="40"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Montserrat" font-size="20" fill="%23FFFDD0" font-weight="bold"%3EFS%3C/text%3E%3C/svg%3E';
+                                  }}
+                              />
               <span className="text-xl font-bold text-primary-cream">FieldScope</span>
             </div>
             <p className="text-sm text-gray-400 mb-4">

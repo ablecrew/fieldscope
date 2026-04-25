@@ -1,16 +1,31 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
   server: {
     port: 5180,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:9000',
-        changeOrigin: true,
-        secure: false,
+    proxy:
+      command === 'serve'
+        ? {
+            '/api': {
+              target: 'http://127.0.0.1:9000',
+              changeOrigin: true,
+              secure: false,
+            },
+          }
+        : {},
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['lucide-react'],
+        },
       },
     },
   },
-});
+}));
